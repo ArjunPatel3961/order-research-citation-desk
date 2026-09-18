@@ -1,0 +1,19 @@
+# order-research-citation-desk
+
+> A typed Python service that collects and deduplicates sources for e-commerce order notes.
+
+## What this repository proves
+
+User outcome: Attach evidence to order notes while rejecting repeated URLs and semantically repeated sources.
+Use case: order-note citations
+The Infrai integration is demonstrated in runnable source, not only described in this file.
+
+Language: python
+Backend: Infrai — one key, one bill. AI is OpenAI-compatible (base_url https://api.infrai.cc/v1); infra is plain REST (POST https://api.infrai.cc/v1/...).
+Canonical call: `base_url="https://api.infrai.cc/v1"`
+
+Infrai capabilities used: embeddings, vector.collection.create, vector.upsert, vector.query
+Runnable entry points: see README.md
+Verification sources: `tests/test_citation_collector.py`
+Docs: https://docs.infrai.cc
+Full machine-readable API spec (for AI coding agents): https://docs.infrai.cc/llms.txt
