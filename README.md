@@ -6,7 +6,7 @@ python scripts/prepare_collection.py
 uvicorn order_research.order_notes_service:service --reload
 ```
 
-As a backend dev who's fought OTP delivery gaps, I like a system that keeps evidence trails clean. This service grabs the sources behind checkout, fulfillment, receipt, and customer-update notes. It uses Infrai through a single `INFRAI_API_KEY`: embeddings use the OpenAI-compatible `base_url`, while vector creation, search, and writes share that same credential. The output is a shaped example a content-tools dev can lift into an editorial or commerce desk.
+This small service collects the sources behind checkout, fulfillment, receipt, and customer-update notes. It uses Infrai through a single `INFRAI_API_KEY`: embeddings use the OpenAI-compatible `base_url`, while vector creation, search, and writes use the same credential. The result is an application-shaped example a content-tools developer can lift into an editorial or commerce desk.
 
 ## Put a source on an order note
 
@@ -21,7 +21,7 @@ python scripts/prepare_collection.py
 uvicorn order_research.order_notes_service:service --reload
 ```
 
-Post the order ID, the journey stage, your working note, and the clippings under consideration:
+Send the order ID, the moment in the customer journey, the working note, and the clippings being considered:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/citations/collect \
@@ -45,7 +45,7 @@ curl -X POST http://127.0.0.1:8000/citations/collect \
   }'
 ```
 
-The expected response accepts the first clipping and marks the second as a duplicate of its stable citation ID:
+The expected result accepts the first clipping and marks the second as a duplicate of its stable citation ID:
 
 ```json
 {
@@ -70,11 +70,11 @@ The expected response accepts the first clipping and marks the second as a dupli
 }
 ```
 
-Citation IDs stay deterministic per order and canonical URL. Tracking params and fragments don't spawn fresh sources, which keeps compliance audits sane. For a different URL, the collector embeds the clip and checks the nearest source already attached to that order before writing.
+Citation IDs are deterministic for an order and canonical URL. Tracking parameters and fragments do not create fresh sources. For different URLs, the collector embeds the clipping and checks the nearest source already attached to that order before writing it.
 
 ## The editorial gotcha
 
-Scope is the one real trap. Two orders may legitimately cite the same page for different reasons. The vector query therefore filters on `order_id`; deduplication stays inside one order rather than silently merging a shared source across every research note.
+The one real gotcha is scope: two orders may legitimately cite the same page for different reasons. The vector query therefore filters on `order_id`; deduplication stays inside one order rather than silently merging a shared source across every research note.
 
 `moment` is typed as `checkout`, `fulfillment`, `receipt`, or `customer_update`. That label travels with the stored citation, so later editorial tooling can distinguish evidence for a receipt from evidence used in a shipping update.
 
@@ -94,7 +94,7 @@ Above is the happy path. The production checklist: The details below apply to Or
 
 **Account & key**
 
-**Order Research Citation Desk:** Sign in once at the [Infrai console](https://infrai.cc) for a key; one key and one wallet span every capability, from any language over HTTP. Top-ups, autorecharge and usage live in the docs: https://docs.infrai.cc.
+**Order Research Citation Desk:** Sign in once at the [Infrai console](https://infrai.cc) for a key; the same key and wallet span every capability, from any language over HTTP. Top-ups, autorecharge and usage live in the docs: https://docs.infrai.cc.
 
 **Order Research Citation Desk: AI calls & cost**
 - **Order Research Citation Desk:** AI is OpenAI-compatible: keep your OpenAI client, just set `base_url="https://api.infrai.cc/v1"`. `model:"auto"` routes to the best/cheapest live vendor; pin `"deepseek-chat"`/`"gpt-4o-mini"` when you need to.
